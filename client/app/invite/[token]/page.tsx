@@ -14,15 +14,12 @@ export default function AcceptInvitePage() {
   const router = useRouter();
   const token = params.token as string;
   const acceptInvitation = useAcceptInvitation();
-  const { isAuthenticated, isLoading: authLoading } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   
   const [status, setStatus] = useState<'loading' | 'success' | 'error' | 'auth-required'>('loading');
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    // Wait for auth to initialize
-    if (authLoading) return;
-
     // If not authenticated, redirect to login with return URL
     if (!isAuthenticated) {
       setStatus('auth-required');
@@ -44,7 +41,7 @@ export default function AcceptInvitePage() {
     };
 
     accept();
-  }, [token, isAuthenticated, authLoading]);
+  }, [token, isAuthenticated, acceptInvitation]);
 
   const handleLogin = () => {
     // Store the invite token to redirect back after login
@@ -52,7 +49,7 @@ export default function AcceptInvitePage() {
     router.push(`/login?redirect=/invite/${token}`);
   };
 
-  if (authLoading || status === 'loading') {
+  if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted">
         <motion.div

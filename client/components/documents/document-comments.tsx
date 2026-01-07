@@ -63,13 +63,13 @@ export function DocumentComments({ documentId }: DocumentCommentsProps) {
                 <div className="flex items-center gap-2">
                   <Avatar className="h-8 w-8">
                     <img
-                      src={comment.user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user.username}`}
-                      alt={comment.user.username}
+                      src={comment.author.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author.username}`}
+                      alt={comment.author.username}
                     />
                   </Avatar>
                   <div className="flex-1">
                     <div className="text-sm font-medium">
-                      {comment.user.first_name || comment.user.username}
+                      {comment.author.display_name || comment.author.first_name || comment.author.username}
                     </div>
                     <div className="text-xs text-muted-foreground">
                       {new Date(comment.created_at).toLocaleDateString()}
@@ -77,9 +77,9 @@ export function DocumentComments({ documentId }: DocumentCommentsProps) {
                   </div>
                 </div>
                 <div className="bg-muted rounded-lg p-3 text-sm">
-                  {comment.content}
+                  {typeof comment.content === 'string' ? comment.content : comment.text || ''}
                 </div>
-                {comment.resolved && (
+                {comment.is_resolved && (
                   <div className="text-xs text-muted-foreground">
                     ✓ Resolved by {comment.resolved_by?.first_name || comment.resolved_by?.username}
                   </div>

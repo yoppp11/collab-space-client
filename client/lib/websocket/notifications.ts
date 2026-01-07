@@ -20,13 +20,13 @@ export function useNotificationWebSocket() {
   const [isConnected, setIsConnected] = useState(false);
   
   const queryClient = useQueryClient();
-  const { accessToken, isAuthenticated } = useAuthStore();
+  const { tokens, isAuthenticated } = useAuthStore();
   
   const maxReconnectAttempts = 5;
   const baseReconnectDelay = 1000;
 
   const connect = useCallback(() => {
-    if (!isAuthenticated || !accessToken) {
+    if (!isAuthenticated || !tokens?.access) {
       return;
     }
 
@@ -37,7 +37,7 @@ export function useNotificationWebSocket() {
 
     try {
       // Connect with token in query params (for JWT auth middleware)
-      const wsUrl = `${WS_URL}/ws/notifications/?token=${accessToken}`;
+      const wsUrl = `${WS_URL}/ws/notifications/?token=${tokens.access}`;
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
@@ -92,7 +92,7 @@ export function useNotificationWebSocket() {
     } catch (error) {
       console.error('Failed to connect WebSocket:', error);
     }
-  }, [isAuthenticated, accessToken, queryClient]);
+  }, [isAuthenticated, tokens, queryClient]);
 
   const disconnect = useCallback(() => {
     if (reconnectTimeoutRef.current) {
@@ -109,7 +109,7 @@ export function useNotificationWebSocket() {
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated && accessToken) {
+    if (isAuthenticated && tokens?.access) {
       connect();
     } else {
       disconnect();
@@ -118,7 +118,7 @@ export function useNotificationWebSocket() {
     return () => {
       disconnect();
     };
-  }, [isAuthenticated, accessToken, connect, disconnect]);
+  }, [isAuthenticated, tokens, connect, disconnect]);
 
   return { isConnected, reconnect: connect, disconnect };
 }
