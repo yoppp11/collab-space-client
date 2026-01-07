@@ -61,8 +61,9 @@ export const useCreateWorkspace = () => {
       // Handle wrapped response { success: true, data: {...} }
       return data?.data || data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+    onSuccess: async () => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({ queryKey: ['workspaces'] });
     },
   });
 };
@@ -75,9 +76,10 @@ export const useUpdateWorkspace = (id: string) => {
       const { data } = await apiClient.patch(`/workspaces/${id}/`, input);
       return data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workspaces', id] });
-      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+    onSuccess: async () => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({ queryKey: ['workspaces', id] });
+      await queryClient.refetchQueries({ queryKey: ['workspaces'] });
     },
   });
 };
@@ -89,8 +91,9 @@ export const useDeleteWorkspace = () => {
     mutationFn: async (id: string) => {
       await apiClient.delete(`/workspaces/${id}/`);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+    onSuccess: async () => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({ queryKey: ['workspaces'] });
     },
   });
 };
@@ -106,8 +109,9 @@ export const useInviteMember = (workspaceId: string) => {
       );
       return data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({
         queryKey: ['workspaces', workspaceId, 'members'],
       });
     },
@@ -136,8 +140,9 @@ export const useAcceptInvitation = () => {
       );
       return data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+    onSuccess: async () => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({ queryKey: ['workspaces'] });
     },
   });
 };
@@ -151,8 +156,9 @@ export const useJoinWorkspaceByCode = () => {
       // Handle wrapped response { success: true, data: {...} }
       return data?.data ? data : data;
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+    onSuccess: async (data) => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({ queryKey: ['workspaces'] });
       // Set the workspace data in cache immediately
       if (data?.workspace) {
         queryClient.setQueryData(['workspaces', data.workspace.id], data.workspace);
@@ -168,8 +174,9 @@ export const useRemoveMember = (workspaceId: string) => {
     mutationFn: async (userId: string) => {
       await apiClient.delete(`/workspaces/${workspaceId}/members/${userId}/`);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({
         queryKey: ['workspaces', workspaceId, 'members'],
       });
     },
@@ -218,8 +225,9 @@ export const useCreateBoard = (workspaceId: string) => {
       // Handle wrapped response { success: true, data: {...} }
       return data?.data || data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({
         queryKey: ['workspaces', workspaceId, 'boards'],
       });
     },
@@ -237,11 +245,12 @@ export const useUpdateBoard = (workspaceId: string, boardId: string) => {
       );
       return data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({
         queryKey: ['workspaces', workspaceId, 'boards', boardId],
       });
-      queryClient.invalidateQueries({
+      await queryClient.refetchQueries({
         queryKey: ['workspaces', workspaceId, 'boards'],
       });
     },
@@ -255,8 +264,9 @@ export const useDeleteBoard = (workspaceId: string) => {
     mutationFn: async (boardId: string) => {
       await apiClient.delete(`/workspaces/${workspaceId}/boards/${boardId}/`);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({
         queryKey: ['workspaces', workspaceId, 'boards'],
       });
     },
@@ -401,8 +411,9 @@ export const useCreateCardComment = (
       );
       return data?.data || data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({
         queryKey: ['workspaces', workspaceId, 'boards', boardId, 'cards', cardId, 'comments'],
       });
     },
@@ -426,8 +437,9 @@ export const useUpdateCardComment = (
       );
       return data?.data || data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({
         queryKey: ['workspaces', workspaceId, 'boards', boardId, 'cards', cardId, 'comments'],
       });
     },
@@ -448,8 +460,9 @@ export const useDeleteCardComment = (
         `/workspaces/${workspaceId}/boards/${boardId}/lists/${listId}/cards/${cardId}/comments/${commentId}/`
       );
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      // Use refetchQueries to ensure data is immediately refreshed
+      await queryClient.refetchQueries({
         queryKey: ['workspaces', workspaceId, 'boards', boardId, 'cards', cardId, 'comments'],
       });
     },
